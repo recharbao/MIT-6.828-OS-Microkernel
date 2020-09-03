@@ -141,6 +141,8 @@ UPROGS=\
 	$U/_mounttest\
 	$U/_crashtest\
         $U/_sleep\
+	$U/_pingpong	
+
 
 fs.img: mkfs/mkfs README user/xargstest.sh $(UPROGS)
 	mkfs/mkfs fs.img README user/xargstest.sh $(UPROGS)
