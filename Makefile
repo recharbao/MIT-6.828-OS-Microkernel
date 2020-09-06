@@ -141,6 +141,7 @@ UPROGS=\
 	$U/_mounttest\
 	$U/_crashtest\
         $U/_sleep\
+	$U/_primes\
 	$U/_pingpong	
 
 
