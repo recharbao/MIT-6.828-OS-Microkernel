@@ -140,7 +140,8 @@ UPROGS=\
 	$U/_bcachetest\
 	$U/_mounttest\
 	$U/_crashtest\
-        $U/_sleep\
+    $U/_sleep\
+	$U/_find\
 	$U/_primes\
 	$U/_pingpong	
 

@@ -29,6 +29,7 @@ int mount(char*, char *);
 int umount(char*);
 
 // ulib.c
+//printf.c
 int stat(const char*, struct stat*);
 char* strcpy(char*, const char*);
 void *memmove(void*, const void*, int);
