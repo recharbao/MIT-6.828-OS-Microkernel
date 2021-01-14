@@ -88,6 +88,7 @@ bget(uint dev, uint blockno)
 
 // Return a locked buf with the contents of the indicated block.
 struct buf*
+//从磁盘中取出一块放入缓冲区
 bread(uint dev, uint blockno)
 {
   struct buf *b;
@@ -100,7 +101,7 @@ bread(uint dev, uint blockno)
   return b;
 }
 
-// Write b's contents to disk.  Must be locked.
+// 把缓冲区的一块写入磁盘.  Must be locked.
 void
 bwrite(struct buf *b)
 {
