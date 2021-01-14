@@ -62,9 +62,9 @@ kfree(void *pa)
   release(&kmem.lock);
 }
 
-// Allocate one 4096-byte page of physical memory.
-// Returns a pointer that the kernel can use.
-// Returns 0 if the memory cannot be allocated.
+// 分配一个 4096-byte 物理内存的页面.
+// 返回一个内核可以使用的指针
+// 返回0如果内存无法被分配
 void *
 kalloc(void)
 {

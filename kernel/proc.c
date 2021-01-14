@@ -74,13 +74,14 @@ myproc(void) {
   return p;
 }
 
+//分配进程号
 int
 allocpid() {
   int pid;
   
   acquire(&pid_lock);
   pid = nextpid;
-  nextpid = nextpid + 1;
+  nextpid = nextpid + 1; //+1
   release(&pid_lock);
 
   return pid;
@@ -91,13 +92,15 @@ allocpid() {
 // and return with p->lock held.
 // If there are no free procs, return 0.
 static struct proc*
+
+//创建每个进程时都会被调用
 allocproc(void)
 {
   struct proc *p;
 
   for(p = proc; p < &proc[NPROC]; p++) {
     acquire(&p->lock);
-    if(p->state == UNUSED) {
+    if(p->state == UNUSED) { //找到一个标记为unused的proc
       goto found;
     } else {
       release(&p->lock);
@@ -106,7 +109,7 @@ allocproc(void)
   return 0;
 
 found:
-  p->pid = allocpid();
+  p->pid = allocpid(); //分配进程号
 
   // Allocate a trapframe page.
   if((p->tf = (struct trapframe *)kalloc()) == 0){
@@ -148,7 +151,7 @@ freeproc(struct proc *p)
   p->state = UNUSED;
 }
 
-// Create a page table for a given process,
+// 为给定的进程创建一个页面
 // with no user pages, but with trampoline pages.
 pagetable_t
 proc_pagetable(struct proc *p)
@@ -195,7 +198,9 @@ uchar initcode[] = {
   0x00, 0x00, 0x00
 };
 
-// Set up first user process.
+
+// 建立第一个用户进程，在main初始化了一些设备和子系统后，调用userinit建立第一个进程
+
 void
 userinit(void)
 {

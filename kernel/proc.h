@@ -1,4 +1,4 @@
-// Saved registers for kernel context switches.
+// 保存 registers 为内核 context switches.
 struct context {
   uint64 ra;
   uint64 sp;
