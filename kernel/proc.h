@@ -87,20 +87,24 @@ struct proc {
   struct spinlock lock;
 
   // p->lock must be held when using these:
-  enum procstate state;        // Process state
-  struct proc *parent;         // Parent process
+  enum procstate state;        // 进程状态
+  struct proc *parent;         // 父进程
   void *chan;                  // If non-zero, sleeping on chan
-  int killed;                  // If non-zero, have been killed
-  int xstate;                  // Exit status to be returned to parent's wait
-  int pid;                     // Process ID
+  int killed;                  // 如果非0，进程已经被杀死
+  int xstate;                  // 返回给父进程wait的退出状态
+  int pid;                     // 进程号
 
   // these are private to the process, so p->lock need not be held.
-  uint64 kstack;               // Virtual address of kernel stack
-  uint64 sz;                   // Size of process memory (bytes)
-  pagetable_t pagetable;       // Page table
+  uint64 kstack;               // 内核栈的虚拟地址
+  uint64 sz;                   // 进程内存的大小 (bytes)
+  pagetable_t pagetable;       // 页表
   struct trapframe *tf;        // data page for trampoline.S
   struct context context;      // swtch() here to run process
   struct file *ofile[NOFILE];  // Open files
-  struct inode *cwd;           // Current directory
-  char name[16];               // Process name (debugging)
+  struct inode *cwd;           // 当前目录
+  char name[16];               // 进程的名称 (debugging)
 };
+
+// xv6为每个进程维护不同的页表，这样就可以合理的定义进程的地址空间了。
+
+
