@@ -61,7 +61,7 @@ bget(uint dev, uint blockno)
 
   acquire(&bcache.lock);
 
-  // Is the block already cached?
+  // 看看是否被缓存
   for(b = bcache.head.next; b != &bcache.head; b = b->next){
     if(b->dev == dev && b->blockno == blockno){
       b->refcnt++;
@@ -71,12 +71,12 @@ bget(uint dev, uint blockno)
     }
   }
 
-  // Not cached; recycle an unused buffer.
+  // 如果没有被缓存，recycle一个违背使用的buffer
   for(b = bcache.head.prev; b != &bcache.head; b = b->prev){
     if(b->refcnt == 0) {
       b->dev = dev;
       b->blockno = blockno;
-      b->valid = 0;
+      b->valid = 0; //数据是否已经被从磁盘上读取
       b->refcnt = 1;
       release(&bcache.lock);
       acquiresleep(&b->lock);
@@ -93,9 +93,10 @@ bread(uint dev, uint blockno)
 {
   struct buf *b;
 
+  // 看看block被缓存了没，如果没有被缓存，则分配一个buffer，否则分配一个locked buffer.
   b = bget(dev, blockno);
-  if(!b->valid) {
-    virtio_disk_rw(b->dev, b, 0);
+  if(!b->valid) {  //如果未被从磁盘上读取
+    virtio_disk_rw(b->dev, b, 0); //将其从磁盘上读取数据写入
     b->valid = 1;
   }
   return b;

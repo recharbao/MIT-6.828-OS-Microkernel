@@ -57,7 +57,7 @@ struct VRingDesc {
 #define VRING_DESC_F_WRITE 2 // device writes (vs read)
 
 struct VRingUsedElem {
-  uint32 id;   // index of start of completed descriptor chain
+  uint32 id;   // 完整的描述符链的开始索引
   uint32 len;
 };
 

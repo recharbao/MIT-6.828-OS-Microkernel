@@ -38,6 +38,7 @@ struct disk {
   // track info about in-flight operations,
   // for use when completion interrupt arrives.
   // indexed by first descriptor index of chain.
+  // 未完全理解
   struct {
     struct buf *b;
     char status;
@@ -124,7 +125,7 @@ virtio_disk_init(int n)
   // plic.c and trap.c arrange for interrupts from VIRTIO0_IRQ.
 }
 
-// find a free descriptor, mark it non-free, return its index.
+// 找到一个 free descriptor, 标记为 non-free, 返回它的索引.
 static int
 alloc_desc(int n)
 {
@@ -163,11 +164,12 @@ free_chain(int n, int i)
   }
 }
 
+// 分配三个文件描述符
 static int
 alloc3_desc(int n, int *idx)
 {
   for(int i = 0; i < 3; i++){
-    idx[i] = alloc_desc(n);
+    idx[i] = alloc_desc(n);  //分配文件描述符
     if(idx[i] < 0){
       for(int j = 0; j < i; j++)
         free_desc(n, idx[j]);
@@ -188,7 +190,7 @@ virtio_disk_rw(int n, struct buf *b, int write)
   // descriptors: one for type/reserved/sector, one for
   // the data, one for a 1-byte status result.
 
-  // allocate the three descriptors.
+  // 分配三个 descriptors.
   int idx[3];
   while(1){
     if(alloc3_desc(n, idx) == 0) {
