@@ -192,6 +192,9 @@ static inline void
 w_satp(uint64 x)
 {
   asm volatile("csrw satp, %0" : : "r" (x));
+  // 这个asm呢，是引入risc-v指令， 在Linux中是引入汇编指令
+  // 经查询risc-v手册可以看出: csrw是写控制状态寄存器 ， satp 是监管者地址转换和保护， 一个寄存器
+  // csrw satp, %0 意思是把 %0 这个位置的数写到寄存器satp中去
 }
 
 static inline uint64

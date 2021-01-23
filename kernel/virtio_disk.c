@@ -32,7 +32,7 @@ struct disk {
   struct UsedArea *used;
 
   // our own book-keeping.
-  char free[NUM];  // is a descriptor free?
+  char free[NUM];  // 看看这个 descriptor 是否是 free 的?
   uint16 used_idx; // we've looked this far in used[2..NUM].
 
   // track info about in-flight operations,
@@ -130,12 +130,12 @@ static int
 alloc_desc(int n)
 {
   for(int i = 0; i < NUM; i++){
-    if(disk[n].free[i]){
-      disk[n].free[i] = 0;
-      return i;
+    if(disk[n].free[i]){  //找到第n号磁盘区一个闲着的descriptor进行分配
+      disk[n].free[i] = 0; //使用标记
+      return i;  //返回descriptor
     }
   }
-  return -1;
+  return -1;  //没有则返回-1
 }
 
 // mark a descriptor as free.
@@ -143,12 +143,12 @@ static void
 free_desc(int n, int i)
 {
   if(i >= NUM)
-    panic("virtio_disk_intr 1");
+    panic("virtio_disk_intr 1");  //输出
   if(disk[n].free[i])
     panic("virtio_disk_intr 2");
-  disk[n].desc[i].addr = 0;
+  disk[n].desc[i].addr = 0;  //在文件描述符中设置地址
   disk[n].free[i] = 1;
-  wakeup(&disk[n].free[0]);
+  wakeup(&disk[n].free[0]);  //唤醒进程，见进程代码部分注释
 }
 
 // free a chain of descriptors.
@@ -170,8 +170,8 @@ alloc3_desc(int n, int *idx)
 {
   for(int i = 0; i < 3; i++){
     idx[i] = alloc_desc(n);  //分配文件描述符
-    if(idx[i] < 0){
-      for(int j = 0; j < i; j++)
+    if(idx[i] < 0){  //如果无法分配
+      for(int j = 0; j < i; j++) //将前面分配的收回
         free_desc(n, idx[j]);
       return -1;
     }
@@ -215,8 +215,8 @@ virtio_disk_rw(int n, struct buf *b, int write)
   buf0.reserved = 0;
   buf0.sector = sector;
 
-  // buf0 is on a kernel stack, which is not direct mapped,
-  // thus the call to kvmpa().
+  // buf0 是一个内核栈, 它不被直接的映射.
+  // 因此需要调用 kvmpa().
   disk[n].desc[idx[0]].addr = (uint64) kvmpa((uint64) &buf0);
   disk[n].desc[idx[0]].len = sizeof(buf0);
   disk[n].desc[idx[0]].flags = VRING_DESC_F_NEXT;
