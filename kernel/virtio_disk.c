@@ -215,8 +215,8 @@ virtio_disk_rw(int n, struct buf *b, int write)
   buf0.reserved = 0;
   buf0.sector = sector;
 
-  // buf0 是一个内核栈, 它不被直接的映射.
-  // 因此需要调用 kvmpa().
+  // buf0 存在内核栈, 它不直接地被映射
+  // 而是通过调用 kvmpa().
   disk[n].desc[idx[0]].addr = (uint64) kvmpa((uint64) &buf0);
   disk[n].desc[idx[0]].len = sizeof(buf0);
   disk[n].desc[idx[0]].flags = VRING_DESC_F_NEXT;

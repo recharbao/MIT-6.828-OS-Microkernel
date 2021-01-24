@@ -191,10 +191,10 @@ w_mtvec(uint64 x)
 static inline void 
 w_satp(uint64 x)
 {
-  asm volatile("csrw satp, %0" : : "r" (x));
   // 这个asm呢，是引入risc-v指令， 在Linux中是引入汇编指令
   // 经查询risc-v手册可以看出: csrw是写控制状态寄存器 ， satp 是监管者地址转换和保护， 一个寄存器
   // csrw satp, %0 意思是把 %0 这个位置的数写到寄存器satp中去
+  asm volatile("csrw satp, %0" : : "r" (x));
 }
 
 static inline uint64
@@ -315,10 +315,12 @@ r_ra()
 }
 
 // flush the TLB.
+// TLB 实际上是一块高速缓存， 缓存的是虚拟地址到物理地址之间的映射。
+// 如果没有TLB, 或者在TLB中的虚拟地址的条目未被命中，则需要一级一级的查找页表，速度比较慢。
 static inline void
 sfence_vma()
 {
-  // the zero, zero means flush all TLB entries.
+  // 这里zero的意思是刷新TLB条目。
   asm volatile("sfence.vma zero, zero");
 }
 

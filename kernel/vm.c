@@ -22,6 +22,8 @@ void print(pagetable_t);
  * turn on paging. called early, in supervisor mode.
  * the page allocator is already initialized.
  */
+
+// 创建并切换到一个拥有内核运行所需的 KERNBASE 以上映射的页表
 void
 kvminit()
 {
@@ -54,6 +56,7 @@ kvminit()
   kvmmap(TRAMPOLINE, (uint64)trampoline, PGSIZE, PTE_R | PTE_X);
 }
 
+// 转换页表
 // Switch h/w page table register to the kernel's page table,
 // and enable paging.
 void
@@ -121,6 +124,7 @@ walkaddr(pagetable_t pagetable, uint64 va)
 // add a mapping to the kernel page table.
 // only used when booting.
 // does not flush TLB or enable paging.
+
 void
 kvmmap(uint64 va, uint64 pa, uint64 sz, int perm)
 {
