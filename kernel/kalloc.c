@@ -14,6 +14,15 @@ void freerange(void *pa_start, void *pa_end);
 extern char end[]; // first address after kernel.
                    // defined by kernel.ld.
 
+
+// 分配器中的数据结构是一个由可分配物理内存页构成的空闲链表。
+// 这个空闲页的链表的元素是结构体 struct run。
+// 那么分配器从哪里获得内存来存放这些数据结构呢？实际上，
+// 分配器将每个空闲页的 run 结构体保存在该空闲页本身中，因为空闲页中没有其他数据。
+// 分配器还用一个 spin lock 来保护空闲链表。
+// 链表和这个锁都封装在一个结构体中，这样逻辑就比较明晰：
+// 锁保护了该结构体中的域。不过现在让我们先忽略这个锁，以及对 acquire 和 release 的调用
+
 struct run {
   struct run *next;
 };
