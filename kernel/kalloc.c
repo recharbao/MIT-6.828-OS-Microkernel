@@ -36,9 +36,11 @@ void
 kinit()
 {
   initlock(&kmem.lock, "kmem");
-  freerange(end, (void*)PHYSTOP);
+  freerange(end, (void*)PHYSTOP);  //将内存加入空闲链表
 }
 
+
+// 对每一页调用kfree()
 void
 freerange(void *pa_start, void *pa_end)
 {
