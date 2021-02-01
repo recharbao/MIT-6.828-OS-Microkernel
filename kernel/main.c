@@ -20,7 +20,7 @@ main()
     printf("\n");
     printf("xv6 kernel is booting\n");
     printf("\n");
-    kinit();         // physical page allocator
+    kinit();         // 物理页表分配器
     kvminit();       // 创建一个内核页表
     kvminithart();   // 打开分页
     procinit();      // process table
