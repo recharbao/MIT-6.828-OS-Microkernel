@@ -9,6 +9,8 @@
 
 static int loadseg(pde_t *pgdir, uint64 addr, struct inode *ip, uint offset, uint sz);
 
+
+// 创建地址空间中用户部分的系统调用
 int
 exec(char *path, char **argv)
 {
@@ -23,13 +25,14 @@ exec(char *path, char **argv)
 
   begin_op(ROOTDEV);
 
+  // namei 打开二进制文件
   if((ip = namei(path)) == 0){
     end_op(ROOTDEV);
     return -1;
   }
   ilock(ip);
 
-  // Check ELF header
+  // 检查 ELF 文件头
   if(readi(ip, 0, (uint64)&elf, 0, sizeof(elf)) != sizeof(elf))
     goto bad;
   if(elf.magic != ELF_MAGIC)
@@ -38,7 +41,7 @@ exec(char *path, char **argv)
   if((pagetable = proc_pagetable(p)) == 0)
     goto bad;
 
-  // Load program into memory.
+  // 把程序加载到内存
   sz = 0;
   for(i=0, off=elf.phoff; i<elf.phnum; i++, off+=sizeof(ph)){
     if(readi(ip, 0, (uint64)&ph, off, sizeof(ph)) != sizeof(ph))
@@ -49,11 +52,11 @@ exec(char *path, char **argv)
       goto bad;
     if(ph.vaddr + ph.memsz < ph.vaddr)
       goto bad;
-    if((sz = uvmalloc(pagetable, sz, ph.vaddr + ph.memsz)) == 0)
+    if((sz = uvmalloc(pagetable, sz, ph.vaddr + ph.memsz)) == 0) // 分配内存
       goto bad;
     if(ph.vaddr % PGSIZE != 0)
       goto bad;
-    if(loadseg(pagetable, ph.vaddr, ip, ph.off, ph.filesz) < 0)
+    if(loadseg(pagetable, ph.vaddr, ip, ph.off, ph.filesz) < 0)  // 把段的内容加载到内存中
       goto bad;
   }
   iunlockput(ip);
