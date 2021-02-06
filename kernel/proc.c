@@ -111,7 +111,7 @@ allocproc(void)
 found:
   p->pid = allocpid(); //分配进程号
 
-  // Allocate a trapframe page.
+  // 分配一个 trapframe 页.
   if((p->tf = (struct trapframe *)kalloc()) == 0){
     release(&p->lock);
     return 0;
