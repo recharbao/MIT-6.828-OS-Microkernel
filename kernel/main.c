@@ -45,5 +45,5 @@ main()
     plicinithart();   // ask PLIC for device interrupts
   }
 
-  scheduler();        
+  scheduler();        // 开始运行进程
 }
